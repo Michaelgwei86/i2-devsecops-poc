@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Checkout from Git') {
             steps {
-                git credentialsId: 'GITHUB', url: 'https://github.com/AmanPathak-DevOps/End-to-End-Kubernetes-Three-Tier-DevSecOps-Project.git'
+                git credentialsId: 'GITHUB', url: 'https://github.com/Michaelgwei86/i2-devsecops-poc.git'
             }
         }
         stage('Sonarqube Analysis') {
@@ -82,28 +82,39 @@ pipeline {
         }
         stage('Checkout Code') {
             steps {
-                git credentialsId: 'GITHUB', url: 'https://github.com/AmanPathak-DevOps/End-to-End-Kubernetes-Three-Tier-DevSecOps-Project.git'
+                git credentialsId: 'GITHUB', url: 'https://github.com/Michaelgwei86/i2-devsecops-poc.git'
             }
         }
         stage('Update Deployment file') {
             environment {
-                GIT_REPO_NAME = "End-to-End-Kubernetes-Three-Tier-DevSecOps-Project"
-                GIT_USER_NAME = "AmanPathak-DevOps"
+                GIT_REPO_NAME = "i2-devsecops-poc"
+                GIT_USER_NAME = "michaelgwei86"
             }
             steps {
                 dir('Kubernetes-Manifests-file/Backend') {
                     withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                         sh '''
-                            git config user.email "aman07pathak@gmail.com"
-                            git config user.name "AmanPathak-DevOps"
-                            BUILD_NUMBER=${BUILD_NUMBER}
-                            echo $BUILD_NUMBER
-                            imageTag=$(grep -oP '(?<=backend:)[^ ]+' deployment.yaml)
-                            echo $imageTag
-                            sed -i "s/${AWS_ECR_REPO_NAME}:${imageTag}/${AWS_ECR_REPO_NAME}:${BUILD_NUMBER}/" deployment.yaml
-                            git add deployment.yaml
-                            git commit -m "Update deployment Image to version \${BUILD_NUMBER}"
-                            git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:master
+                            git config user.email "michaelgwei86@gmail.com"
+                            git config user.name "michaelgwei86"
+                            
+                            echo "BUILD_NUMBER=${BUILD_NUMBER}"
+                            oldImage=$(grep -oP '(?<=image: )[^\"]*' deployment.yaml)
+                            echo "Old image found: $oldImage"
+                            
+                            newImage="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${AWS_ECR_REPO_NAME}:${BUILD_NUMBER}"
+                            echo "New image: $newImage"
+                            
+                            # Replace full image reference
+                            sed -i "s|$oldImage|$newImage|g" deployment.yaml
+                            
+                            # Confirm if changes occurred
+                            if git diff --quiet deployment.yaml; then
+                                echo "No changes made to deployment.yaml. Skipping commit."
+                            else
+                                git add deployment.yaml
+                                git commit -m \"Update deployment Image to version ${BUILD_NUMBER}\"
+                                git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:master
+                            fi
                         '''
                     }
                 }
