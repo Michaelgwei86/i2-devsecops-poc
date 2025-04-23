@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: three-tier
+  namespace: i2-group
   name: mongodb-svc
 spec:
   selector:
