@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Checkout from Git') {
             steps {
-                git credentialsId: 'GITHUB', url: 'https://github.com/Michaelgwei86/i2-devsecops-poc.git'
+                git credentialsId: 'GITHUB_TOKEN', url: 'https://github.com/Michaelgwei86/i2-devsecops-poc.git'
             }
         }
         stage('Sonarqube Analysis') {
