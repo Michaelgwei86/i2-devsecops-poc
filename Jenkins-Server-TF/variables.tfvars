@@ -1,0 +1,8 @@
+vpc-name      = "i2-group-vpc"
+igw-name      = "i2-group-igw"
+subnet-name   = "i2-group-subnet"
+rt-name       = "i2-group-route-table"
+sg-name       = "i2-group-sg"
+instance-name = "i2-group-server"
+key-name      = "i2-group-kp"
+iam-role      = "i2-group-iam-role"
