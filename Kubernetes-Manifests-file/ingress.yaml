@@ -42,7 +42,7 @@ spec:
                 name: api
                 port:
                   number: 3500
-          - path: /
+          - path: /app
             pathType: Prefix
             backend:
               service:
