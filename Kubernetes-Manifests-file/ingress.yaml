@@ -14,7 +14,7 @@ spec:
     - host: camerinfoline.info
       http:
         paths:
-          - path: /
+          - path: /api
             pathType: Prefix
             backend:
               service:
@@ -42,7 +42,7 @@ spec:
                 name: api
                 port:
                   number: 3500
-          - path: /app
+          - path: /
             pathType: Prefix
             backend:
               service:
