@@ -19,7 +19,7 @@ pipeline {
         }
         stage('Checkout from Git') {
             steps {
-                git credentialsId: 'GITHUB_TOKEN', url: 'https://github.com/Michaelgwei86/i2-devsecops-poc.git'
+                git branch: 'main', credentialsId: 'GITHUB_TOKEN', url: 'https://github.com/Michaelgwei86/i2-devsecops-poc.git'
             }
         }
         stage('Sonarqube Analysis') {
@@ -82,7 +82,7 @@ pipeline {
         }
         stage('Checkout Code') {
             steps {
-                git credentialsId: 'GITHUB', url: 'https://github.com/Michaelgwei86/i2-devsecops-poc.git'
+                git branch: 'main', credentialsId: 'GITHUB_TOKEN', url: 'https://github.com/Michaelgwei86/i2-devsecops-poc.git'
             }
         }
         stage('Update Deployment file') {
@@ -113,7 +113,7 @@ pipeline {
                             else
                                 git add deployment.yaml
                                 git commit -m \"Update deployment Image to version ${BUILD_NUMBER}\"
-                                git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:master
+                                git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME}.git HEAD:main
                             fi
                         '''
                     }
